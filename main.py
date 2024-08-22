@@ -58,10 +58,10 @@ def parser(flow_log_file, lookup_table_data):
 
             # Counting for the tags and the port/protocols
             # and writing the data to their dictionaries
-            if value in tag_counter:
-                tag_counter[value] += 1
+            if value.lower() in tag_counter:
+                tag_counter[value.lower()] += 1
             else:
-                tag_counter[value] = 1
+                tag_counter[value.lower()] = 1
 
             if key in port_and_protocol_counter:
                 port_and_protocol_counter[key] += 1

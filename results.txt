@@ -1,10 +1,10 @@
 Tag Counts:
 Tag,Count
-Untagged,8218
-sv_P1,524
-sv_P2,503
+untagged,8218
+sv_p1,524
+sv_p2,503
 email,494
-sv_P5,261
+sv_p5,261
 ---------------
 Port/Protocol Counts:
 Port,Protocol,Count
