@@ -8,6 +8,14 @@ python main.py
 
 The results will be in a results.txt file in the same directory
 
+I wrote a flow log generator that is included:
+
+Edit the function call with the amount of lines and file output and run it:
+
+python generate_log.py
+
+Then you would edit the FLOW_LOG_FILE const in main.py to the generated flow log file.
+
 ASSUMPTIONS:
 
 - The flow log file has all the required fields. For example, no empty fields which would likely be replaced with a "-" according to the AWS docs
