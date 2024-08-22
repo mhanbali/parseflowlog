@@ -3,7 +3,7 @@ import csv
 # Declare constants for the file names in case we want to use
 # other inputs more easily.
 LOOKUP_TABLE_FILE = "lookuptable.csv"
-FLOW_LOG_FILE = "flowlog.txt"
+FLOW_LOG_FILE = "generated-flow-log.txt"
 RESULTS_FILE = "results.txt"
 
 
@@ -33,7 +33,7 @@ def open_lookup_table(file):
 # https://docs.aws.amazon.com/vpc/latest/userguide/flow-log-records.html
 #
 # The protocol information can be found here: https://www.iana.org/assignments/protocol-numbers/protocol-numbers.xhtml
-def parser(flow_log_file, lookup_table_data, results_file):
+def parser(flow_log_file, lookup_table_data):
     # declare empty dictionaries to write the count data
     tag_counter = {}
     port_and_protocol_counter = {}
@@ -68,26 +68,29 @@ def parser(flow_log_file, lookup_table_data, results_file):
             else:
                 port_and_protocol_counter[key] = 1
 
+    return tag_counter, port_and_protocol_counter
+
+
+def write_results(tag_counter, port_and_protocol_counter, file):
     # Declaring the headers as string lists to avoid the csv writer from adding quotes
     tag_count_header = ["Tag", "Count"]
     port_and_protocol_header = ["Port", "Protocol", "Count"]
 
-    with open(results_file, "w", newline="") as csvfile:
+    with open(file, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
 
-        # write out the caption and headers for the tag data
         writer.writerow(["Tag Counts:"])
         writer.writerow(tag_count_header)
 
+        # iterate over and write the Tag,Count rows
         for tag, count in tag_counter.items():
             writer.writerow([tag, count])
 
         writer.writerow(["---------------"])
-
-        # write out the caption and headers for the port/protocol data
         writer.writerow(["Port/Protocol Counts:"])
         writer.writerow(port_and_protocol_header)
 
+        # iterate over and write the Port,Protocol,Count rows
         for (port, protocol), count in port_and_protocol_counter.items():
             writer.writerow([port, protocol, count])
 
@@ -95,7 +98,9 @@ def parser(flow_log_file, lookup_table_data, results_file):
 def main():
     # Read in the data from the lookup table file and pass it to the parser function
     lookup_table_data = open_lookup_table(LOOKUP_TABLE_FILE)
-    parser(FLOW_LOG_FILE, lookup_table_data, RESULTS_FILE)
+    # assign the returned parsed data
+    tag_count, port_and_protocol_count = parser(FLOW_LOG_FILE, lookup_table_data)
+    write_results(tag_count, port_and_protocol_count, RESULTS_FILE)
     print(
         f"The flow log has been parsed. Check the {RESULTS_FILE} file for the results."
     )
